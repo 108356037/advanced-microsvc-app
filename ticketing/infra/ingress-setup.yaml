@@ -17,4 +17,11 @@ spec:
             name: auth-svc
             port:
               number: 3000
+      - pathType: Prefix
+        path: /?(.*)
+        backend:
+          service:
+            name: client-svc
+            port:
+              number: 3000
             
