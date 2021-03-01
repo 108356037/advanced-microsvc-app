@@ -10,8 +10,10 @@ import { signoutRouter } from './routes/signout'
 import { signupRouter } from './routes/signup'
 import { errorHandler } from './middlewares/error-handler'
 import { NotFoundError } from './errors/not-found-error'
+import cors from 'cors'
 
 const app = express()
+app.use(cors())
 app.set('trust proxy', true)
 app.use(json())
 app.use(
