@@ -14,7 +14,7 @@ spec:
         app: auth-mongo
     spec:
       containers:
-      - image: mongo:latest
+      - image: mongo
         name: mongo
         resources: {}
 status: {}

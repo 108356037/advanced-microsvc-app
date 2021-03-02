@@ -7,21 +7,21 @@ deploy:
       - ./infra/*
 build:
   local:
-    push: false
+    push: true
   artifacts:
-    - image: docker.io/108356037/auth
+    - image: auth
       context: auth
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
           - src: 'src/**/*.ts'
-            dest: /
-    - image:  docker.io/108356037/client
+            dest: .
+    - image:  client
       context: client
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
           - src: '**/*.js'
-            dest: /
+            dest: .
