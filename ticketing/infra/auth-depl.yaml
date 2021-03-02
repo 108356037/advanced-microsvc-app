@@ -13,7 +13,7 @@ spec:
         app: auth
     spec:
       containers:
-      - image: 108356037/auth
+      - image: 108356037/auth:microk8s
         name: auth
         env:
           - name: JWT_KEY
@@ -21,7 +21,10 @@ spec:
               secretKeyRef:
                 name: jwt-secret
                 key: JWT_KEY
+        imagePullPolicy: IfNotPresent
         resources: {}
+      # imagePullSecrets:
+      # - name: regcred
 ---
 apiVersion: v1
 kind: Service
