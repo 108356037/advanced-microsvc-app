@@ -6,14 +6,16 @@ function Page() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const { doRequest, errors } = useRequest({
-        url: '/api/users/signup',
+        url: '/api/users/signin',
         method: 'post',
         body: {
-            email, password
+            email, 
+            password
         },
         onSuccess: () => Router.push('/')
     })
 
+    // const [successResponse, setResponse] = useState('')
     const onSubmit = async (event) => {
         event.preventDefault()
         await doRequest()
@@ -21,7 +23,7 @@ function Page() {
 
     return (
         <form onSubmit={onSubmit}>
-            <h1>Sign up</h1>
+            <h1>Sign In</h1>
             <div className="form-group">
                 <label>Email Address</label>
                 <input 
@@ -39,8 +41,16 @@ function Page() {
                     type="password"
                 />
             </div>
+            {/* {successResponse && (
+                <div className="success success-msg">
+                    <h4>Congratulations!!</h4>
+                    <ul className="my-1">
+                        <li>Remember your info</li>
+                    </ul>
+                </div>
+            )} */}
             {errors}
-        <button className="btn btn-primary">Sign Up</button>
+        <button className="btn btn-primary">Sign In</button>
     </form>
 )
 }
