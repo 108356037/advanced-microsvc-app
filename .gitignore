@@ -1,3 +1,5 @@
 node_modules/
 .next/
 common/
+.vscode/
+microk8s-utils/
