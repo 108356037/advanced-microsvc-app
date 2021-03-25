@@ -1,15 +1,14 @@
 apiVersion: skaffold/v2alpha3
 kind: Config
 deploy:
-  kubeContext: microk8s
   kubectl:
     manifests:
       - ./infra/*
 build:
   local:
-    push: true
+    push: false
   artifacts:
-    - image: auth
+    - image: 108356037/auth
       context: auth
       docker:
         dockerfile: Dockerfile
@@ -17,7 +16,7 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
-    - image:  client
+    - image:  108356037/client
       context: client
       docker:
         dockerfile: Dockerfile

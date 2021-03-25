@@ -13,7 +13,7 @@ spec:
         app: auth
     spec:
       containers:
-      - image: auth
+      - image: 108356037/auth
         name: auth
         env:
           - name: JWT_KEY

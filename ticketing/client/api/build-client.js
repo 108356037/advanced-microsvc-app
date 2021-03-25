@@ -4,7 +4,7 @@ export default ({req}) => {
     if (typeof window === 'undefined') {
         // on server
         return axios.create({
-            baseURL: 'http://ingress.ingress.svc.cluster.local',
+            baseURL: 'http://ingress-nginx-controller.default.svc.cluster.local',
             headers: req.headers
         })
     } else {

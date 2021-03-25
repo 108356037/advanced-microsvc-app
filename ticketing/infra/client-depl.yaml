@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: client
-        image: client:microk8s
+        image: 108356037/client
         resources: {}
         imagePullPolicy: IfNotPresent
       # imagePullSecrets:
