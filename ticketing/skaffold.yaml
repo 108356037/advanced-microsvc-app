@@ -6,7 +6,7 @@ deploy:
       - ./infra/*
 build:
   local:
-    push: true
+    push: false
   artifacts:
     - image: 108356037/auth
       context: auth
