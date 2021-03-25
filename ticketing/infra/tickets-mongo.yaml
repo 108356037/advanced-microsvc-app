@@ -1,31 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-mongo-depl
+  name: tickets-mongo-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auth-mongo
+      app: tickets-mongo
   strategy: {}
   template:
     metadata:
       labels:
-        app: auth-mongo
+        app: tickets-mongo
     spec:
       containers:
       - image: mongo
-        name: auth-mongo
+        name: tickets-mongo
         resources: {}
 status: {}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth-mongo-svc
+  name: tickets-mongo-svc
 spec:
   selector:
-    app: auth-mongo
+    app: tickets-mongo
   ports:
     - port: 27017
       targetPort: 27017
