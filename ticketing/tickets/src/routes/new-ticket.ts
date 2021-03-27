@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import { body } from 'express-validator'
 
-import { validateRequest, BadRequestError, RequireAuth } from '@158fighterss/common'
+import { validateRequest, RequireAuth, BadRequestError } from '@158fighterss/common'
 import { Ticket } from '../models/ticket'
 
 const router = express.Router()
@@ -14,12 +14,12 @@ router.post('/api/tickets/newticket',
     ],
     validateRequest,
     async (req: Request, res: Response) => {
-        const { title, price} = req.body
+        const {title, price} = req.body
 
         const existingTicket = await Ticket.findOne({title})
 
         if (existingTicket) {
-            throw new BadRequestError('This title is registered')
+            throw new BadRequestError("this ticket name is registered")
         }
 
         const ticket = Ticket.build({title, price, userId: req.currentUser!.id})

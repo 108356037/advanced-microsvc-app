@@ -11,17 +11,17 @@ it('has a route handler listening to /api/tickets for POST', async() => {
 
 it('can only be accessed if the user is signed in', async() => {
     await request(app)
-    .post('/api/tickets/newticket')
-    .send({})
-    .expect(401)
+        .post('/api/tickets/newticket')
+        .send({})
+        .expect(401)
 })
 
 it('accessed if the user is signed in', async() => {
     await request(app)
-    .post('/api/tickets/newticket')
-    .set("Cookie", global.signin())
-    .send({})
-    .expect(400)
+        .post('/api/tickets/newticket')
+        .set("Cookie", global.signin())
+        .send({})
+        .expect(400)
 })
 
 it('returns an error if an invalid title is provided', async() => {
