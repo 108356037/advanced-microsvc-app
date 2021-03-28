@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nats-server
+  name: nats-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats-server
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: nats-server
+    spec:
+      containers:
+      - image: nats-streaming
+        name: nats
+        args: 
+        - "-p"
+        - "4222"
+        - "-m"
+        - "8222"
+        - "-hbi"
+        - "5s"
+        - "-hbt"
+        - "5s"
+        - "-hbf"
+        - "2"
+        - "-SD"
+        - "-cid"
+        - "ticketing"
+        resources: {}
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats-server-svc
+spec:
+  selector:
+    app: nats-server
+  ports:
+    - port: 4222
+      targetPort: 4222
+      protocol: TCP
+      name: client
+    - port: 8222
+      targetPort: 8222
+      protocol: TCP
+      name: monitoring
