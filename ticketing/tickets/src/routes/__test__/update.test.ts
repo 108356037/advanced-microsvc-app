@@ -1,6 +1,8 @@
 import request from 'supertest'
 import { app } from '../../app'
 import mongoose from 'mongoose'
+import { natsWrapper } from '../../nats-wrapper'
+
 
 it('return 401 if cookie not set', async() => {
     const id = mongoose.Types.ObjectId().toHexString()
@@ -119,4 +121,5 @@ it('return 200 if provide vaild title/price and owned ticket', async() => {
 
     expect(updatedTicket.body.title).toEqual(testVal.setTwo.title)
     expect(updatedTicket.body.price).toEqual(testVal.setTwo.price)
+    expect(natsWrapper.client.publish).toHaveBeenCalled()
 })

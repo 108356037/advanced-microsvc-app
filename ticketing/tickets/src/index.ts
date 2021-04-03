@@ -9,9 +9,22 @@ const start = async () => {
     if (!process.env.MONGO_URI) {
         throw new Error('JWT_KEY must be defined')
     }
+    if (!process.env.NATS_URL) {
+        throw new Error('Nats server url must be defined')
+    }
+    if (!process.env.NATS_CLUSTER_ID) {
+        throw new Error('Nats cluster Id must be defined')
+    }
+    if (!process.env.NATS_CLIENT_ID) {
+        throw new Error('Nats client Id must be defined')
+    }
 
     try {
-        await natsWrapper.connnect('ticketing', 'kigfke', 'http://nats-server-svc:4222')
+        await natsWrapper.connnect(
+            process.env.NATS_CLUSTER_ID, 
+            process.env.NATS_CLIENT_ID, 
+            process.env.NATS_URL
+        )
         natsWrapper.client.on('close', () => {
             console.log('NATS connection closed!')
             process.exit()
