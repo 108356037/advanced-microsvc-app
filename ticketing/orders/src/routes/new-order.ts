@@ -3,7 +3,8 @@ import { body } from 'express-validator'
 import mongoose from 'mongoose'
 import { Ticket } from '../models/ticket'
 import { Order } from '../models/order'
-
+import { OrderCreatedPublisher } from '../events/publisher/order-created-publihser'
+import { natsWrapper } from '../nats-wrapper'
 import { validateRequest, RequireAuth, BadRequestError, NotFoundError, OrderStatus } from '@158fighterss/common'
 
 const router = express.Router()
@@ -45,7 +46,17 @@ router.post('/api/orders/neworder',
             ticket
         })
         await order.save()
+        new OrderCreatedPublisher(natsWrapper.client).publish({
+            id: order.id,
+            status: order.status,
+            userId: order.userId,
+            expiresAt: order.expiresAt.toISOString(),
+            ticket: {
+                id: ticket.id,
+                price: ticket.price
+            }
 
+        })
         res.status(201).send(order)
     }
 )
