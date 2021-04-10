@@ -33,7 +33,8 @@ router.put('/api/tickets/:id',
             id: existingTicket.id,
             title: existingTicket.title,
             price: existingTicket.price,
-            userId: existingTicket.userId
+            userId: existingTicket.userId,
+            version: existingTicket.version,
         })
 
         res.status(200).send(existingTicket)
