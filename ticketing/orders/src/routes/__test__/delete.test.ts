@@ -2,9 +2,11 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
+import { Order, OrderStatus } from '../../models/order';
+import { natsWrapper } from '../../nats-wrapper';
 
-it('fetches the order', async () => {
-  // Create a ticket
+it('marks an order as cancelled', async () => {
+  // create a ticket with Ticket Model
   const ticket = Ticket.build({
     id: mongoose.Types.ObjectId().toHexString(),
     title: 'concert',
@@ -13,25 +15,27 @@ it('fetches the order', async () => {
   await ticket.save();
 
   const user = global.signin();
-  // make a request to build an order with this ticket
+  // make a request to create an order
   const { body: order } = await request(app)
     .post('/api/orders/neworder')
     .set('Cookie', user)
     .send({ ticketId: ticket.id })
     .expect(201);
 
-  // make request to fetch the order
-  const { body: fetchedOrder } = await request(app)
-    .get(`/api/orders/${order.id}`)
+  // make a request to cancel the order
+  await request(app)
+    .delete(`/api/orders/${order.id}`)
     .set('Cookie', user)
     .send()
-    .expect(200);
+    .expect(204);
 
-  expect(fetchedOrder.id).toEqual(order.id);
+  // expectation to make sure the thing is cancelled
+  const updatedOrder = await Order.findById(order.id);
+
+  expect(updatedOrder!.status).toEqual(OrderStatus.Cancelled);
 });
 
-it('returns an error if one user tries to fetch another users order', async () => {
-  // Create a ticket
+it('emits a order cancelled event', async () => {
   const ticket = Ticket.build({
     id: mongoose.Types.ObjectId().toHexString(),
     title: 'concert',
@@ -40,17 +44,19 @@ it('returns an error if one user tries to fetch another users order', async () =
   await ticket.save();
 
   const user = global.signin();
-  // make a request to build an order with this ticket
+  // make a request to create an order
   const { body: order } = await request(app)
     .post('/api/orders/neworder')
     .set('Cookie', user)
     .send({ ticketId: ticket.id })
     .expect(201);
 
-  // make request to fetch the order
+  // make a request to cancel the order
   await request(app)
-    .get(`/api/orders/${order.id}`)
-    .set('Cookie', global.signin())
+    .delete(`/api/orders/${order.id}`)
+    .set('Cookie', user)
     .send()
-    .expect(401);
+    .expect(204);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });
