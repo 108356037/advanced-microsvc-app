@@ -33,6 +33,10 @@ spec:
                 fieldPath: metadata.name
         imagePullPolicy: IfNotPresent
         resources: {}
+      initContainers:
+      - name: init-service
+        image: busybox
+        command: ['sh', '-c', "until nslookup tickets-mongo-svc.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for db setup; sleep 2; done"]
       # imagePullSecrets:
       # - name: regcred
 ---
