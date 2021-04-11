@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import { body } from 'express-validator'
 
-import { NonAuthorizedError, NotFoundError, RequireAuth, validateRequest } from '@158fighterss/common'
+import { BadRequestError, NonAuthorizedError, NotFoundError, RequireAuth, validateRequest } from '@158fighterss/common'
 import { Ticket } from '../models/ticket'
 import { TicketUpdatedPublisher } from '../events/publisher/ticket-updated-publisher'
 import { natsWrapper } from '../nats-wrapper'
@@ -20,6 +20,11 @@ router.put('/api/tickets/:id',
         if (!existingTicket) {
             throw new NotFoundError()
         }
+
+        if (existingTicket.orderId) {
+            throw new BadRequestError('the ticket is locked by an order')
+        }
+
         if (req.currentUser!.id !== existingTicket.userId) {
             throw new NonAuthorizedError()
         }

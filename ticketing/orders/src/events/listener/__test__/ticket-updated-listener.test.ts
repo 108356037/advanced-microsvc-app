@@ -45,7 +45,7 @@ it('finds, updates, and save a ticket', async() => {
 
 it('check if message published, ack is called', async() => {
     const { listener, data, msg } = await setup()
-     await listener.onMessage(data, msg)
+    await listener.onMessage(data, msg)
 
     expect(msg.ack).toHaveBeenCalled()
 })

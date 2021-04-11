@@ -2,6 +2,7 @@ import request from 'supertest'
 import { app } from '../../app'
 import mongoose from 'mongoose'
 import { natsWrapper } from '../../nats-wrapper'
+import { Ticket } from '../../models/ticket'
 
 
 it('return 401 if cookie not set', async() => {
@@ -122,4 +123,29 @@ it('return 200 if provide vaild title/price and owned ticket', async() => {
     expect(updatedTicket.body.title).toEqual(testVal.setTwo.title)
     expect(updatedTicket.body.price).toEqual(testVal.setTwo.price)
     expect(natsWrapper.client.publish).toHaveBeenCalled()
+})
+
+it('rejects update if ticket locked by an order', async () => {
+    const userCookie = global.signin()
+    const response = await request(app)
+        .post('/api/tickets/newticket')
+        .set('Cookie', userCookie)
+        .send({
+            title: 'swagDay',
+            price: 99.99
+        })
+        .expect(201)
+    
+    const ticket = await Ticket.findById(response.body.id)
+    ticket!.set({ orderId: mongoose.Types.ObjectId().toHexString()})
+    await ticket!.save()
+
+    const updatedTicket = await request(app)
+        .put(`/api/tickets/${response.body.id}`)
+        .set('Cookie', userCookie)
+        .send({
+            title: 'swfefagDay',
+            price: 20.99
+        })
+        .expect(400)
 })
