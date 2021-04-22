@@ -1,0 +1,2 @@
+# when kube-controller-manager is stucked at crashbackloop 
+rm -rf ~/Library/Group\ Containers/group.com.docker/pki
