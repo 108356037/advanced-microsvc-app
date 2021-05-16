@@ -20,7 +20,16 @@ nodes:
     protocol: TCP
 - role: worker
 - role: worker
-- role: worker " | kind create cluster --config -
+- role: worker
+  kubeadmConfigPatches:
+  - |
+    kind: JoinConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "file-server=true"
+  extraMounts:
+    - hostPath: "/home/tsai/Desktop/algoTrade/containerized"
+      containerPath: "/var/local-path-provisioner/stock-data"" | kind create cluster --config -
 
 #secret for ticketing-app
 kubectl create secret generic jwt-secret --from-literal JWT_KEY=asdf
